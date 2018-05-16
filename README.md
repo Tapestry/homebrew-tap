@@ -1,14 +1,17 @@
 # homebrew-tap
 
-This is Clover Health's Homebrew Tap, which features formulas to help pin
-Postgres to 9.6 and Postgis to 2.3.
+This is Tapestrys Homebrew Tap, which features formulas to help pin
+Postgres to 9.6.8 and Postgis to 2.3.4.
+
+Our Amazong AWS RDS uses Postgres 9.6.8 and Postgis 2.3.4:
+[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.version968]()
 
 Homebrew will pull in the latest version of formulas when they are upgraded,
 meaning that users can inadvertently be upgraded to Postgresql 10. The
 postgresql.rb formula here ensures that 9.6.8 is installed, and the postgis.rb
-formulate ensures that 2.3.2 is installed.
+formulate ensures that 2.3.4 is installed.
 
-## Installing Postgres 9.6 and Postgis 2.3
+## Installing Postgres 9.6.8 and Postgis 2.3.4
 
 First ensure you have upgraded to the latest homebrew:
 
@@ -23,13 +26,13 @@ installations:
 brew uninstall postgis --force
 brew uninstall postgresql --force
 brew cleanup
-brew services stop postgresql
+# brew services stop postgresql
 ```
 
-After this, install Clover's custom brew tap:
+After this, install Tapestry's custom brew tap:
 
 ```sh
-brew tap cloverhealth/homebrew-tap
+brew tap tapestry/homebrew-tap
 ```
 
 Then install the latest version of Postgres and unlink it. This is done first so that
@@ -49,7 +52,7 @@ rm -rf /usr/local/var/postgres
 Now install Postgres from this tap with:
 
 ```sh
-brew install cloverhealth/tap/postgresql  # yes, without the homebrew-
+brew install tapestry/tap/postgresql
 ```
 
 Now you will have both 9.6.8 and the latest version of Postgres installed.
@@ -59,16 +62,21 @@ Switch to 9.6.8 with:
 brew switch postgresql 9.6.8
 ```
 
-Postgis 2.3 can be installed with:
+There is a bug while building Postgis 2.3.4 with json-c 0.13. This is a header file that should not be referenced by Postgis. Fix by creating an empty file:
+```sh
+touch /usr/local/opt/json-c/include/json-c/json_object_private.h
+```
+
+Postgis 2.3.4 can be installed with:
 
 ```sh
-brew install cloverhealth/tap/postgis
+brew install tapestry/tap/postgis
 ```
 
 Try running and accessing Postgres with the following:
 
 ```sh
-brew services start postgresql
+# brew services start postgresql
 psql postgres  # It should show 9.6.8 as the version on the prompt
 ```
 
